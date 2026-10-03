@@ -25,6 +25,7 @@ testpaths = ["tests"]
 python_version = "3.11"
 strict = true
 files = ["src", "tests"]
+disable_error_code = ["import-untyped"]
 
 [[tool.mypy.overrides]]
 module = ["onnxruntime", "pyclipper", "yaml", "cv2", "numpy", "numpy.typing"]
