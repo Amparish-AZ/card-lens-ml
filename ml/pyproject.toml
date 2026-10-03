@@ -27,7 +27,7 @@ strict = true
 files = ["src", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["onnxruntime", "pyclipper", "yaml"]
+module = ["onnxruntime", "pyclipper", "yaml", "cv2", "numpy", "numpy.typing"]
 ignore_missing_imports = true
 
 [tool.ruff]
