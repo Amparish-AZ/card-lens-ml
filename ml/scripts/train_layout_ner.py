@@ -328,7 +328,7 @@ def main() -> int:
     )
     callbacks = [
         tf.keras.callbacks.EarlyStopping(
-            monitor="val_loss", patience=4, restore_best_weights=True
+            monitor="val_loss", patience=20, restore_best_weights=True
         )
     ]
     history = model.fit(
