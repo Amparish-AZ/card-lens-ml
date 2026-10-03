@@ -9,9 +9,9 @@ from typing import Any, cast
 import cv2
 import numpy as np
 import numpy.typing as npt
-import onnxruntime as ort
-import pyclipper
-import yaml
+import onnxruntime as ort  # type: ignore
+import pyclipper  # type: ignore
+import yaml  # type: ignore
 
 FloatArray = npt.NDArray[np.float32]
 PointArray = npt.NDArray[np.float32]
