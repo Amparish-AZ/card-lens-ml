@@ -1,0 +1,2 @@
+{"schema_version":1,"card_id":"example-001","image":"images/example-001.jpg","split":"train","lines":[{"ocr_text":"Asha Raman","truth_text":"Asha Raman","label":"name","box":[0.08,0.20,0.31,0.08]},{"ocr_text":"Product Director","truth_text":"Product Director","label":"title","box":[0.08,0.30,0.34,0.05]},{"ocr_text":"Northwind Labs","truth_text":"Northwind Labs","label":"company","box":[0.08,0.06,0.42,0.10]},{"ocr_text":"asha@example.com","truth_text":"asha@example.com","label":"email","box":[0.08,0.55,0.40,0.05]}]}
+

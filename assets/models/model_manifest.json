@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "model_version": "1.7.0-bootstrap",
+  "dataset_version": "legacy-real-19",
+  "created_at": "2026-08-31T00:00:00+00:00",
+  "source_revision": null,
+  "artifacts": [
+    {
+      "name": "ocr_detector",
+      "file": "android/ppocr-sdk/src/main/assets/models/det/inference.onnx",
+      "sha256": "d73e0058b7a8086bbd57f3d10b8bcd4ff95363f67e06e2762b5e814fe9c9410e",
+      "bytes": 9880512
+    },
+    {
+      "name": "ocr_recognizer",
+      "file": "android/ppocr-sdk/src/main/assets/models/rec/inference.onnx",
+      "sha256": "5435fd747c9e0efe15a96d0b378d5bd157e9492ed8fd80edf08f30d02fa24634",
+      "bytes": 21159378
+    },
+    {
+      "name": "ocr_recognizer_config",
+      "file": "android/ppocr-sdk/src/main/assets/models/rec/inference.yml",
+      "sha256": "ab078671bb49f06228eadccd34f1bb501e157f7a047095ffb943ba81512c77d1",
+      "bytes": 150579
+    },
+    {
+      "name": "field_parser",
+      "file": "assets/models/card_field_classifier.tflite",
+      "sha256": "29d4dc29f47c918ae8ca92d4bd94927df792ee5ca9a2a16adc573e9b2936e869",
+      "bytes": 23048
+    },
+    {
+      "name": "parser_metrics",
+      "file": "assets/models/training_metrics.json",
+      "sha256": "a49049c00900e6d77f3fefa405256fb9d79685e8e660f1780d2ce61de0ebfd48",
+      "bytes": 1420
+    }
+  ],
+  "note": "Bootstrap manifest for the models bundled before the versioned ML pipeline was introduced."
+}

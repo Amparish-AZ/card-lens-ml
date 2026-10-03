@@ -1,0 +1,42 @@
+{
+  "character_encoding": "UTF-8 byte value plus one; zero is padding",
+  "layout_features": [
+    "x",
+    "y",
+    "width",
+    "height",
+    "ocr_confidence",
+    "reading_order",
+    "relative_height",
+    "valid_line",
+    "digit_ratio",
+    "alphabetic_ratio",
+    "whitespace_ratio",
+    "has_at_sign",
+    "has_dot",
+    "has_plus_sign",
+    "has_comma",
+    "normalized_text_length"
+  ],
+  "max_lines": 32,
+  "max_utf8_bytes_per_line": 96,
+  "model": "cardlens-layout-ner",
+  "schema_version": 1,
+  "tags": [
+    "O",
+    "B-NAME",
+    "I-NAME",
+    "B-TITLE",
+    "I-TITLE",
+    "B-COMPANY",
+    "I-COMPANY",
+    "B-EMAIL",
+    "I-EMAIL",
+    "B-PHONE",
+    "I-PHONE",
+    "B-WEBSITE",
+    "I-WEBSITE",
+    "B-ADDRESS",
+    "I-ADDRESS"
+  ]
+}

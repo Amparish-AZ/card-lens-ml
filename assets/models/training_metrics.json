@@ -1,0 +1,105 @@
+{
+  "seed": 7319,
+  "train_samples": 80880,
+  "synthetic_train_samples": 72000,
+  "real_cards": 19,
+  "real_labeled_lines": 111,
+  "real_augmented_samples": 8880,
+  "validation_samples": 16000,
+  "synthetic_validation_accuracy": 0.9979375,
+  "real_training_accuracy": 1.0,
+  "recall_by_class": {
+    "name": 0.997,
+    "title": 1.0,
+    "company": 0.9865,
+    "email": 1.0,
+    "phone": 1.0,
+    "website": 1.0,
+    "address": 1.0,
+    "other": 1.0
+  },
+  "confusion_matrix": [
+    [
+      1994,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      2000,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      26,
+      1,
+      1973,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      2000,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      2000,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2000,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2000,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2000
+    ]
+  ],
+  "model_bytes": 23048,
+  "note": "Synthetic validation and real-corpus training accuracy are not an independent real-world guarantee."
+}

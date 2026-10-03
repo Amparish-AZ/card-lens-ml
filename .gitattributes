@@ -1,0 +1,12 @@
+# Business-card photographs are binary training assets and belong in Git LFS.
+ml/data/registry/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+ml/data/registry/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+ml/data/registry/**/*.png filter=lfs diff=lfs merge=lfs -text
+ml/data/registry/**/*.webp filter=lfs diff=lfs merge=lfs -text
+
+# Bundled PaddleOCR weights are versioned inputs, not ordinary source blobs.
+android/ppocr-sdk/src/main/assets/models/**/*.onnx filter=lfs diff=lfs merge=lfs -text
+
+# Published model releases are uploaded as GitHub Release assets. These rules
+# protect against accidentally committing large experiment artifacts directly.
+ml/dist/** filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,78 @@
+name: Build app with approved models
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_release_tag:
+        description: Published model tag, for example models-v1.1.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python -m pip install -e ml
+      - name: Download approved model release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "${{ inputs.model_release_tag }}" --pattern "cardlens-models-*.zip" --dir ml/incoming
+      - name: Verify and install models
+        run: |
+          unzip ml/incoming/cardlens-models-*.zip -d ml/incoming/unpacked
+          RELEASE_DIR=$(find ml/incoming/unpacked -mindepth 1 -maxdepth 1 -type d | head -1)
+          python -m cardlens_ml install-release --release "$RELEASE_DIR" --project .
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build appbundle --release
+      - run: flutter build apk --release --split-per-abi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardlens-android-${{ inputs.model_release_tag }}
+          path: |
+            build/app/outputs/bundle/release/*.aab
+            build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+
+  ios-unsigned:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python -m pip install -e ml
+      - name: Download approved model release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "${{ inputs.model_release_tag }}" --pattern "cardlens-models-*.zip" --dir ml/incoming
+      - name: Verify and install models
+        run: |
+          unzip ml/incoming/cardlens-models-*.zip -d ml/incoming/unpacked
+          RELEASE_DIR=$(find ml/incoming/unpacked -mindepth 1 -maxdepth 1 -type d | head -1)
+          python -m cardlens_ml install-release --release "$RELEASE_DIR" --project .
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build ios --release --no-codesign
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardlens-ios-unsigned-${{ inputs.model_release_tag }}
+          path: build/ios/iphoneos/Runner.app
+          if-no-files-found: error
+

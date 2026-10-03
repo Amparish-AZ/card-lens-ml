@@ -1,0 +1,114 @@
+name: Train and package CardLens NER
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_version:
+        description: Immutable model release version, for example 2.0.0
+        required: true
+        type: string
+      synthetic_cards:
+        description: Number of generated English business cards
+        required: true
+        default: "5000"
+        type: string
+      epochs:
+        description: Maximum training epochs (early stopping is enabled)
+        required: true
+        default: "20"
+        type: string
+      publish_release:
+        description: Publish an immutable GitHub model release
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cardlens-model-training
+  cancel-in-progress: false
+
+jobs:
+  train-evaluate-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Verify Git LFS objects are present
+        run: git lfs pull && git lfs fsck
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            ml/pyproject.toml
+            ml/requirements-train.txt
+      - run: python -m pip install -e "ml[dev]"
+      - run: python -m pip install -r ml/requirements-train.txt
+      - name: Validate every accumulated dataset
+        run: python -m cardlens_ml list-ner-registry --registry ml/data/registry
+      - name: Train compact layout-aware NER
+        run: >-
+          python ml/scripts/train_layout_ner.py
+          --registry ml/data/registry
+          --output ml/dist/trained
+          --synthetic-cards "${{ inputs.synthetic_cards }}"
+          --real-oversample 30
+          --epochs "${{ inputs.epochs }}"
+      - name: Upload candidate model and complete metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: cardlens-ner-candidate-${{ inputs.model_version }}
+          path: ml/dist/trained
+          if-no-files-found: error
+          retention-days: 30
+      - name: Enforce independent test accuracy gates
+        run: >-
+          python -m cardlens_ml evaluate-gates
+          --metrics ml/dist/trained/layout_ner_metrics.json
+          --config ml/config/layout_ner_gates.json
+      - name: Record aggregate dataset version
+        run: >-
+          python -m cardlens_ml list-ner-registry
+          --registry ml/data/registry
+          --output ml/dist/trained/registry_report.json
+      - name: Package OCR and trained NER
+        run: >-
+          python -m cardlens_ml package-release
+          --model-version "${{ inputs.model_version }}"
+          --dataset-version "registry-${{ github.sha }}"
+          --source-revision "${{ github.sha }}"
+          --artifact ocr_detector=android/ppocr-sdk/src/main/assets/models/det/inference.onnx
+          --artifact ocr_recognizer=android/ppocr-sdk/src/main/assets/models/rec/inference.onnx
+          --artifact ocr_recognizer_config=android/ppocr-sdk/src/main/assets/models/rec/inference.yml
+          --artifact field_parser=assets/models/card_field_classifier.tflite
+          --artifact parser_metrics=assets/models/training_metrics.json
+          --artifact layout_ner=ml/dist/trained/layout_ner.tflite
+          --artifact layout_ner_metadata=ml/dist/trained/layout_ner_metadata.json
+          --artifact layout_ner_metrics=ml/dist/trained/layout_ner_metrics.json
+          --artifact dataset_registry_report=ml/dist/trained/registry_report.json
+          --output ml/dist/releases
+      - name: Archive model release
+        run: >-
+          cd ml/dist/releases && zip -r
+          "cardlens-models-${{ inputs.model_version }}.zip"
+          "cardlens-models-${{ inputs.model_version }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cardlens-models-${{ inputs.model_version }}
+          path: ml/dist/releases/cardlens-models-${{ inputs.model_version }}.zip
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish immutable GitHub release
+        if: inputs.publish_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "models-v${{ inputs.model_version }}"
+          "ml/dist/releases/cardlens-models-${{ inputs.model_version }}.zip"
+          --title "CardLens models ${{ inputs.model_version }}"
+          --notes "All verified datasets in ml/data/registry; source ${{ github.sha }}"

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cardlens.local/schemas/card-ner-dataset.schema.json",
+  "title": "CardLens layout-aware NER card annotation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "card_id",
+    "physical_card_group",
+    "image",
+    "source",
+    "split",
+    "verified",
+    "tokens"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 2},
+    "card_id": {"type": "string", "minLength": 1},
+    "physical_card_group": {"type": "string", "minLength": 1},
+    "image": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "split": {"enum": ["train", "validation", "test"]},
+    "verified": {
+      "description": "True when the NER entity tags were reviewed against the card image.",
+      "type": "boolean"
+    },
+    "tokens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "ocr_text",
+          "truth_text",
+          "tag",
+          "box",
+          "confidence",
+          "line_index"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ocr_text": {"type": "string"},
+          "truth_text": {"type": "string", "minLength": 1},
+          "tag": {
+            "enum": [
+              "O",
+              "B-NAME", "I-NAME",
+              "B-TITLE", "I-TITLE",
+              "B-COMPANY", "I-COMPANY",
+              "B-EMAIL", "I-EMAIL",
+              "B-PHONE", "I-PHONE",
+              "B-WEBSITE", "I-WEBSITE",
+              "B-ADDRESS", "I-ADDRESS"
+            ]
+          },
+          "box": {
+            "description": "Normalized x, y, width, height values in the range 0..1.",
+            "type": "array",
+            "prefixItems": [
+              {"type": "number", "minimum": 0, "maximum": 1},
+              {"type": "number", "minimum": 0, "maximum": 1},
+              {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+              {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+            ],
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "line_index": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}
