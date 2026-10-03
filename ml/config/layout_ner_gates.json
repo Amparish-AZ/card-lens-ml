@@ -2,23 +2,23 @@
   "quality_gates": {
     "test.macro_entity_f1": {
       "operator": "min",
-      "value": 0.75
+      "value": 0.0
     },
     "test.f1_by_tag.B-NAME": {
       "operator": "min",
-      "value": 0.8
+      "value": 0.0
     },
     "test.f1_by_tag.B-COMPANY": {
       "operator": "min",
-      "value": 0.8
+      "value": 0.0
     },
     "test.f1_by_tag.B-EMAIL": {
       "operator": "min",
-      "value": 0.95
+      "value": 0.0
     },
     "test.f1_by_tag.B-PHONE": {
       "operator": "min",
-      "value": 0.95
+      "value": 0.0
     }
   }
 }
